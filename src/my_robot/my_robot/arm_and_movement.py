@@ -81,8 +81,8 @@ class ArmAndMovementNode(Node):
     def perform_combined_movement(self):
         """
         Perform a 3-minute dance sequence with various patterns including snake-like movements,
-        wave patterns, and synchronized arm-robot movements. All forward movements are balanced
-        with backward movements, and linear movements are limited to 2 seconds maximum.
+        wave patterns, and synchronized arm-robot movements. All forward movements are immediately
+        countered by equal backward movements, and linear movements are limited to 1 second maximum.
         """
         try:
             start_time = time.time()
@@ -101,34 +101,30 @@ class ArmAndMovementNode(Node):
                     # Snake-like sequential movement
                     self.get_logger().info("Performing snake-like sequential movement")
                     # Forward movement
-                    self.move_robot(0.2, 0.0, 1.5)
+                    self.move_robot(0.2, 0.0, 0.8)
                     for joint in range(1, 7):
                         self.move_arm({joint: 700})
-                        time.sleep(0.2)
+                        time.sleep(0.15)
                     
-                    # Backward movement
-                    self.move_robot(-0.2, 0.0, 1.5)
+                    # Immediate backward movement
+                    self.move_robot(-0.2, 0.0, 0.8)
                     for joint in range(6, 0, -1):
                         self.move_arm({joint: 300})
-                        time.sleep(0.2)
+                        time.sleep(0.15)
 
                 elif pattern == 1:
                     # Wave pattern with balanced movements
                     self.get_logger().info("Performing wave pattern")
                     for _ in range(2):
                         # Forward wave
-                        self.move_robot(0.15, 0.1, 1.0)
+                        self.move_robot(0.15, 0.1, 0.8)
                         self.move_arm({2: 700, 3: 600, 4: 500})
-                        time.sleep(0.5)
-                        self.move_arm({2: 300, 3: 400, 4: 700})
-                        time.sleep(0.5)
+                        time.sleep(0.3)
                         
-                        # Backward wave
-                        self.move_robot(-0.15, -0.1, 1.0)
-                        self.move_arm({2: 700, 3: 600, 4: 500})
-                        time.sleep(0.5)
+                        # Immediate backward wave
+                        self.move_robot(-0.15, -0.1, 0.8)
                         self.move_arm({2: 300, 3: 400, 4: 700})
-                        time.sleep(0.5)
+                        time.sleep(0.3)
 
                 elif pattern == 2:
                     # Spiral dance with balanced movements
@@ -136,60 +132,60 @@ class ArmAndMovementNode(Node):
                     for i in range(2):
                         # Forward spiral
                         angular_speed = 0.2 + (i * 0.1)
-                        self.move_robot(0.15, angular_speed, 1.5)
+                        self.move_robot(0.15, angular_speed, 0.8)
                         for joint in range(1, 7):
                             self.move_arm({joint: 500 + (100 if i % 2 == 0 else -100)})
-                            time.sleep(0.2)
+                            time.sleep(0.1)
                         
-                        # Backward spiral
-                        self.move_robot(-0.15, -angular_speed, 1.5)
+                        # Immediate backward spiral
+                        self.move_robot(-0.15, -angular_speed, 0.8)
                         for joint in range(6, 0, -1):
                             self.move_arm({joint: 500 + (100 if i % 2 == 0 else -100)})
-                            time.sleep(0.2)
+                            time.sleep(0.1)
 
                 elif pattern == 3:
                     # Zigzag with arm wave and balanced movements
                     self.get_logger().info("Performing zigzag with arm wave")
                     for _ in range(2):
                         # Forward zig
-                        self.move_robot(0.2, 0.3, 1.0)
+                        self.move_robot(0.2, 0.3, 0.8)
                         self.move_arm({1: 600, 2: 700, 3: 400})
-                        time.sleep(0.5)
+                        time.sleep(0.3)
                         
-                        # Backward zag
-                        self.move_robot(-0.2, -0.3, 1.0)
+                        # Immediate backward zag
+                        self.move_robot(-0.2, -0.3, 0.8)
                         self.move_arm({1: 400, 2: 300, 3: 600})
-                        time.sleep(0.5)
+                        time.sleep(0.3)
 
                 elif pattern == 4:
                     # Circular wave with balanced movements
                     self.get_logger().info("Performing circular wave")
                     for _ in range(2):
                         # Forward circle
-                        self.move_robot(0.15, 0.4, 1.5)
+                        self.move_robot(0.15, 0.4, 0.8)
                         for joint in range(1, 7):
                             self.move_arm({joint: 700})
-                            time.sleep(0.2)
+                            time.sleep(0.1)
                         
-                        # Backward circle
-                        self.move_robot(-0.15, -0.4, 1.5)
+                        # Immediate backward circle
+                        self.move_robot(-0.15, -0.4, 0.8)
                         for joint in range(6, 0, -1):
                             self.move_arm({joint: 300})
-                            time.sleep(0.2)
+                            time.sleep(0.1)
 
                 # Brief pause between patterns
-                time.sleep(1.0)
+                time.sleep(0.5)
                 
                 # Return to home position periodically
                 if int(time.time() - start_time) % 30 == 0:  # Every 30 seconds
                     self.get_logger().info("Returning to home position")
                     self.move_arm(self.home_position)
-                    time.sleep(2.0)
+                    time.sleep(1.0)
 
             # Final return to home position
             self.get_logger().info("Dance sequence complete - Returning to home position")
             self.move_arm(self.home_position)
-            time.sleep(2.0)
+            time.sleep(1.0)
 
         except KeyboardInterrupt:
             self.get_logger().info("Dance interrupted by user")

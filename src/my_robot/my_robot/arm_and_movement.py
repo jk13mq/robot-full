@@ -81,7 +81,8 @@ class ArmAndMovementNode(Node):
     def perform_combined_movement(self):
         """
         Perform a 3-minute dance sequence with various patterns including snake-like movements,
-        wave patterns, and synchronized arm-robot movements.
+        wave patterns, and synchronized arm-robot movements. All forward movements are balanced
+        with backward movements, and linear movements are limited to 2 seconds maximum.
         """
         try:
             start_time = time.time()
@@ -99,65 +100,79 @@ class ArmAndMovementNode(Node):
                 if pattern == 0:
                     # Snake-like sequential movement
                     self.get_logger().info("Performing snake-like sequential movement")
+                    # Forward movement
                     self.move_robot(0.2, 0.0, 1.5)
                     for joint in range(1, 7):
                         self.move_arm({joint: 700})
-                        time.sleep(0.3)
+                        time.sleep(0.2)
                     
+                    # Backward movement
                     self.move_robot(-0.2, 0.0, 1.5)
                     for joint in range(6, 0, -1):
                         self.move_arm({joint: 300})
-                        time.sleep(0.3)
+                        time.sleep(0.2)
 
                 elif pattern == 1:
-                    # Wave pattern
+                    # Wave pattern with balanced movements
                     self.get_logger().info("Performing wave pattern")
-                    for _ in range(3):
+                    for _ in range(2):
+                        # Forward wave
                         self.move_robot(0.15, 0.1, 1.0)
                         self.move_arm({2: 700, 3: 600, 4: 500})
                         time.sleep(0.5)
                         self.move_arm({2: 300, 3: 400, 4: 700})
                         time.sleep(0.5)
-                    
-                    for _ in range(3):
-                        self.move_robot(0.15, -0.1, 1.0)
+                        
+                        # Backward wave
+                        self.move_robot(-0.15, -0.1, 1.0)
                         self.move_arm({2: 700, 3: 600, 4: 500})
                         time.sleep(0.5)
                         self.move_arm({2: 300, 3: 400, 4: 700})
                         time.sleep(0.5)
 
                 elif pattern == 2:
-                    # Spiral dance
+                    # Spiral dance with balanced movements
                     self.get_logger().info("Performing spiral dance")
-                    for i in range(4):
+                    for i in range(2):
+                        # Forward spiral
                         angular_speed = 0.2 + (i * 0.1)
-                        self.move_robot(0.15, angular_speed, 2.0)
+                        self.move_robot(0.15, angular_speed, 1.5)
                         for joint in range(1, 7):
+                            self.move_arm({joint: 500 + (100 if i % 2 == 0 else -100)})
+                            time.sleep(0.2)
+                        
+                        # Backward spiral
+                        self.move_robot(-0.15, -angular_speed, 1.5)
+                        for joint in range(6, 0, -1):
                             self.move_arm({joint: 500 + (100 if i % 2 == 0 else -100)})
                             time.sleep(0.2)
 
                 elif pattern == 3:
-                    # Zigzag with arm wave
+                    # Zigzag with arm wave and balanced movements
                     self.get_logger().info("Performing zigzag with arm wave")
-                    for _ in range(4):
+                    for _ in range(2):
+                        # Forward zig
                         self.move_robot(0.2, 0.3, 1.0)
                         self.move_arm({1: 600, 2: 700, 3: 400})
                         time.sleep(0.5)
                         
-                        self.move_robot(0.2, -0.3, 1.0)
+                        # Backward zag
+                        self.move_robot(-0.2, -0.3, 1.0)
                         self.move_arm({1: 400, 2: 300, 3: 600})
                         time.sleep(0.5)
 
                 elif pattern == 4:
-                    # Circular wave
+                    # Circular wave with balanced movements
                     self.get_logger().info("Performing circular wave")
                     for _ in range(2):
-                        self.move_robot(0.15, 0.4, 2.0)
+                        # Forward circle
+                        self.move_robot(0.15, 0.4, 1.5)
                         for joint in range(1, 7):
                             self.move_arm({joint: 700})
                             time.sleep(0.2)
                         
-                        self.move_robot(0.15, -0.4, 2.0)
+                        # Backward circle
+                        self.move_robot(-0.15, -0.4, 1.5)
                         for joint in range(6, 0, -1):
                             self.move_arm({joint: 300})
                             time.sleep(0.2)
